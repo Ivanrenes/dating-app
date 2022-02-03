@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx prettier --write src/* && npx eslint --fix src/*
+npx prettier --write src/* && npx eslint --ext js,jsx --fix src/

@@ -19,7 +19,9 @@ module.exports = {
   },
   plugins: ['react', 'react-hooks', 'prettier'],
   rules: {
+    'no-shadow': 'off',
     'prettier/prettier': 'error',
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }]
-  }
+  },
+  ignorePatterns: ['*.svg']
 };
