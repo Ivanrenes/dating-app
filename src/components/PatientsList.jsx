@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Patient from './Patient';
 
-function PatientsList({ patients }) {
+function PatientsList({ patients, setPatient, setPatients }) {
   return (
     <div className="md:w-1/2 lg:w-3/5">
       {patients && patients.length ? (
@@ -16,7 +16,13 @@ function PatientsList({ patients }) {
           </p>
           <div className="md:h-screen overflow-y-auto">
             {patients.map((patient) => (
-              <Patient key={patient.id} patient={patient} />
+              <Patient
+                key={patient.id}
+                patient={patient}
+                setPatient={setPatient}
+                patients={patients}
+                setPatients={setPatients}
+              />
             ))}
           </div>
         </>
@@ -38,7 +44,9 @@ function PatientsList({ patients }) {
 }
 
 PatientsList.propTypes = {
-  patients: PropTypes.arrayOf(PropTypes.object).isRequired
+  patients: PropTypes.arrayOf(PropTypes.object).isRequired,
+  setPatient: PropTypes.func.isRequired,
+  setPatients: PropTypes.func.isRequired
 };
 
 export default PatientsList;

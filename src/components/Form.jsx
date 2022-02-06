@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Error from './Error';
 
-function Form({ patients, setPatients }) {
+function Form({ patients, patient, setPatients, setPatient }) {
   const [petName, setPetName] = useState('');
   const [ownerName, setOwnerName] = useState('');
   const [email, setEmail] = useState('');
@@ -10,6 +10,16 @@ function Form({ patients, setPatients }) {
   const [symptoms, setSymptoms] = useState('');
 
   const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (Object.keys(patient).length > 0) {
+      setPetName(patient.petName);
+      setOwnerName(patient.ownerName);
+      setEmail(patient.email);
+      setEntryDate(patient.entryDate);
+      setSymptoms(patient.symptoms);
+    }
+  }, [patient]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,7 +37,6 @@ function Form({ patients, setPatients }) {
 
     // Create new patient object
     const newPatient = {
-      id: generateId(),
       petName,
       ownerName,
       email,
@@ -35,7 +44,20 @@ function Form({ patients, setPatients }) {
       symptoms
     };
 
-    setPatients([...patients, newPatient]);
+    if (patient.id) {
+      // Edit Patient
+      // Add correspondent ID to patient which we are updating
+      newPatient.id = patient.id;
+      const patientsUpdated = patients.map((patientState) =>
+        patient.id === patientState.id ? newPatient : patientState
+      );
+      setPatients(patientsUpdated);
+      setPatient({});
+    } else {
+      // Add Patient
+      newPatient.id = generateId();
+      setPatients([...patients, newPatient]);
+    }
 
     // Reset form
     setPetName('');
@@ -139,8 +161,8 @@ function Form({ patients, setPatients }) {
         </div>
         <input
           type="submit"
-          className="bg-indigo-600 font-bold text-white hover:bg-indigo-700 p-3 w-full uppercase transition-colors"
-          value="Add Patient"
+          className="bg-indigo-600 font-bold text-white hover:bg-indigo-700 p-3 w-full uppercase rounded-md transition-colors"
+          value={patient.id ? 'Edit Patient' : 'Add Patient'}
         />
       </form>
     </div>
@@ -149,7 +171,16 @@ function Form({ patients, setPatients }) {
 
 Form.propTypes = {
   patients: PropTypes.arrayOf(PropTypes.object).isRequired,
-  setPatients: PropTypes.func.isRequired
+  setPatients: PropTypes.func.isRequired,
+  patient: PropTypes.shape({
+    id: PropTypes.string,
+    petName: PropTypes.string,
+    ownerName: PropTypes.string,
+    email: PropTypes.string,
+    entryDate: PropTypes.string,
+    symptoms: PropTypes.string
+  }).isRequired,
+  setPatient: PropTypes.func.isRequired
 };
 
 export default Form;
